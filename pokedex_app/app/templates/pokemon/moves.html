@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}Pokémon Moves - PokéApp{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+<style>
+    .moves-container {
+        margin-top: 30px;
+    }
+    
+    .move-row {
+        transition: background-color 0.3s ease;
+    }
+    
+    .move-row:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .move-name {
+        font-weight: bold;
+    }
+    
+    .move-category {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .move-category.physical {
+        background-color: #C92112;
+        color: white;
+    }
+    
+    .move-category.special {
+        background-color: #4F5870;
+        color: white;
+    }
+    
+    .move-category.status {
+        background-color: #8C888C;
+        color: white;
+    }
+    
+    .move-power, .move-accuracy, .move-pp {
+        font-weight: 500;
+    }
+    
+    .move-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .filter-card {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container moves-container">
+    <h1 class="mb-4">Pokémon Moves</h1>
+    
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3">
+            <div class="card filter-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('pokemon.moves_list') }}" method="get" id="filterForm">
+                        <!-- Type Filter -->
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select" id="type" name="type">
+                                <option value="">All Types</option>
+                                {% for type in types %}
+                                    <option value="{{ type.english }}" 
+                                            {% if move_type == type.english %}selected{% endif %}>
+                                        {{ type.english }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <div class="d-flex">
+                                {% for cat in categories %}
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="radio" name="category" 
+                                               id="category-{{ cat }}" value="{{ cat }}"
+                                               {% if category == cat %}checked{% endif %}>
+                                        <label class="form-check-label" for="category-{{ cat }}">
+                                            {{ cat | title }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="category" 
+                                           id="category-all" value=""
+                                           {% if not category %}checked{% endif %}>
+                                    <label class="form-check-label" for="category-all">
+                                        All
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Filter -->
+                        <div class="mb-3">
+                            <label for="search" class="form-label">Search</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search" name="q" 
+                                       value="{{ query }}" placeholder="Move name">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Apply Filters Button -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Move Types Info -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Move Categories</h5>
+                </div>
+                <div class="card-body">
+                    <p><span class="move-category physical">Physical</span> - Physical moves use Attack and Defense stats</p>
+                    <p><span class="move-category special">Special</span> - Special moves use Sp. Attack and Sp. Defense stats</p>
+                    <p><span class="move-category status">Status</span> - Status moves don't deal direct damage</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Moves Table -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>
+                    {% if move_type %}{{ move_type }} Type Moves{% else %}All Moves{% endif %}
+                    {% if category %} - {{ category | title }}{% endif %}
+                    {% if query %} - Search: "{{ query }}"{% endif %}
+                </h4>
+                
+                <div>
+                    <span class="text-muted">{{ total }} moves found</span>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Power</th>
+                            <th>Accuracy</th>
+                            <th>PP</th>
+                            <th>Effect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for move in moves_list %}
+                            <tr class="move-row">
+                                <td class="move-name">{{ move.name }}</td>
+                                <td>
+                                    <span class="type-badge type-{{ move.type | lower }}">{{ move.type }}</span>
+                                </td>
+                                <td>
+                                    <span class="move-category {{ move.category | lower }}">{{ move.category | title }}</span>
+                                </td>
+                                <td class="move-power">
+                                    {% if move.power %}{{ move.power }}{% else %}-{% endif %}
+                                </td>
+                                <td class="move-accuracy">
+                                    {% if move.accuracy %}{{ move.accuracy }}%{% else %}-{% endif %}
+                                </td>
+                                <td class="move-pp">{{ move.pp }}</td>
+                                <td class="move-description">{{ move.effect }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    <div class="alert alert-info my-3">
+                                        No moves found matching your criteria.
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if total_pages > 1 %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('pokemon.moves_list', page=current_page-1, type=move_type, category=category, q=query) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        
+                        {% for p in range(max(1, current_page - 2), min(current_page + 3, total_pages + 1)) %}
+                            <li class="page-item {% if p == current_page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('pokemon.moves_list', page=p, type=move_type, category=category, q=query) }}">{{ p }}</a>
+                            </li>
+                        {% endfor %}
+                        
+                        <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('pokemon.moves_list', page=current_page+1, type=move_type, category=category, q=query) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function resetFilters() {
+        window.location.href = "{{ url_for('pokemon.moves_list') }}";
+    }
+</script>
+{% endblock %} 

@@ -1,0 +1,553 @@
+{% extends 'base.html' %}
+
+{% block title %}Pokédex - API Documentation{% endblock %}
+
+{% block styles %}
+<style>
+    .code-block {
+        background-color: #282c34;
+        border-radius: 5px;
+        padding: 15px;
+        font-family: monospace;
+        overflow-x: auto;
+        margin-bottom: 20px;
+    }
+    
+    .endpoint {
+        border-left: 4px solid var(--primary-color, #3498db);
+        padding-left: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .get {
+        border-color: #2ecc71;
+    }
+    
+    .post {
+        border-color: #3498db;
+    }
+    
+    .delete {
+        border-color: #e74c3c;
+    }
+    
+    .put {
+        border-color: #f39c12;
+    }
+    
+    .method {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        color: white;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    
+    .method-get {
+        background-color: #2ecc71;
+    }
+    
+    .method-post {
+        background-color: #3498db;
+    }
+    
+    .method-delete {
+        background-color: #e74c3c;
+    }
+    
+    .method-put {
+        background-color: #f39c12;
+    }
+    
+    .table {
+        color: inherit;
+    }
+    
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color, #3498db);
+    }
+    
+    .nav-pills .nav-link {
+        color: var(--primary-color, #3498db);
+    }
+    
+    h2 {
+        margin-top: 30px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Pokédex API Documentation</h1>
+        <p class="lead mb-5">Our RESTful API provides programmatic access to the Pokédex data. All API responses are in JSON format.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="sticky-top pt-3" style="top: 80px;">
+            <div class="list-group">
+                <a href="#getting-started" class="list-group-item list-group-item-action bg-dark text-white">Getting Started</a>
+                <a href="#pokemon" class="list-group-item list-group-item-action bg-dark text-white">Pokémon API</a>
+                <a href="#types" class="list-group-item list-group-item-action bg-dark text-white">Types API</a>
+                <a href="#moves" class="list-group-item list-group-item-action bg-dark text-white">Moves API</a>
+                <a href="#items" class="list-group-item list-group-item-action bg-dark text-white">Items API</a>
+                <a href="#teams" class="list-group-item list-group-item-action bg-dark text-white">Teams API</a>
+                <a href="#errors" class="list-group-item list-group-item-action bg-dark text-white">Error Handling</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card bg-dark text-white mb-4">
+            <div class="card-body">
+                <section id="getting-started">
+                    <h2>Getting Started</h2>
+                    <p>The base URL for all API endpoints is:</p>
+                    <div class="code-block">
+                        <code>http://localhost:5000/api</code>
+                    </div>
+                    
+                    <h3>Authentication</h3>
+                    <p>Currently, the API does not require authentication for read operations. However, some write operations may require authentication in the future.</p>
+                    
+                    <h3>Rate Limiting</h3>
+                    <p>There are no rate limits currently, but please be considerate with your API usage.</p>
+                </section>
+                
+                <section id="pokemon" class="mt-5">
+                    <h2>Pokémon API</h2>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /pokemon
+                        </h3>
+                        <p>Returns a list of all Pokémon with basic information.</p>
+                        
+                        <h4>Query Parameters</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>limit</td>
+                                    <td>integer</td>
+                                    <td>20</td>
+                                    <td>Number of results to return</td>
+                                </tr>
+                                <tr>
+                                    <td>offset</td>
+                                    <td>integer</td>
+                                    <td>0</td>
+                                    <td>Number of results to skip</td>
+                                </tr>
+                                <tr>
+                                    <td>generation</td>
+                                    <td>integer</td>
+                                    <td>-</td>
+                                    <td>Filter by generation (1-9)</td>
+                                </tr>
+                                <tr>
+                                    <td>type</td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Filter by Pokémon type</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/pokemon?limit=5&generation=1</code>
+                        </div>
+                        
+                        <h4>Example Response</h4>
+                        <div class="code-block">
+<pre>{
+  "success": true,
+  "count": 5,
+  "total": 151,
+  "pokemon": [
+    {
+      "id": 1,
+      "name": {
+        "english": "Bulbasaur",
+        "japanese": "フシギダネ",
+        "chinese": "妙蛙种子",
+        "french": "Bulbizarre"
+      },
+      "type": ["Grass", "Poison"],
+      "image": {
+        "sprite": "/static/images/sprites/1.png"
+      }
+    },
+    // ... more Pokémon
+  ]
+}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /pokemon/{id}
+                        </h3>
+                        <p>Returns detailed information about a specific Pokémon.</p>
+                        
+                        <h4>Path Parameters</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>integer</td>
+                                    <td>Pokédex ID of the Pokémon</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/pokemon/25</code>
+                        </div>
+                        
+                        <h4>Example Response</h4>
+                        <div class="code-block">
+<pre>{
+  "success": true,
+  "pokemon": {
+    "id": 25,
+    "name": {
+      "english": "Pikachu",
+      "japanese": "ピカチュウ",
+      "chinese": "皮卡丘",
+      "french": "Pikachu"
+    },
+    "type": ["Electric"],
+    "base": {
+      "HP": 35,
+      "Attack": 55,
+      "Defense": 40,
+      "Sp. Attack": 50,
+      "Sp. Defense": 50,
+      "Speed": 90
+    },
+    "species": "Mouse Pokémon",
+    "description": "When several of these Pokémon gather, their electricity could build and cause lightning storms.",
+    "evolution": {
+      "prev": [172],
+      "next": [26]
+    },
+    "image": {
+      "sprite": "/static/images/sprites/25.png",
+      "thumbnail": "/static/images/thumbnails/25.png"
+    },
+    "height": "0.4 m",
+    "weight": "6.0 kg",
+    "generation": 1,
+    "abilities": ["Static", "Lightning Rod"],
+    "moves": ["Thunder Shock", "Quick Attack", "Thunderbolt", "Thunder"]
+  }
+}</pre>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="types" class="mt-5">
+                    <h2>Types API</h2>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /types
+                        </h3>
+                        <p>Returns a list of all Pokémon types.</p>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/types</code>
+                        </div>
+                        
+                        <h4>Example Response</h4>
+                        <div class="code-block">
+<pre>{
+  "success": true,
+  "types": [
+    {
+      "name": "Normal",
+      "weaknesses": ["Fighting"],
+      "resistances": [],
+      "immunes": ["Ghost"]
+    },
+    {
+      "name": "Fire",
+      "weaknesses": ["Water", "Ground", "Rock"],
+      "resistances": ["Fire", "Grass", "Ice", "Bug", "Steel", "Fairy"],
+      "immunes": []
+    },
+    // ... more types
+  ]
+}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /types/{name}
+                        </h3>
+                        <p>Returns detailed information about a specific type.</p>
+                        
+                        <h4>Path Parameters</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Name of the type (e.g. Fire, Water)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/types/Electric</code>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="moves" class="mt-5">
+                    <h2>Moves API</h2>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /moves
+                        </h3>
+                        <p>Returns a list of all Pokémon moves.</p>
+                        
+                        <h4>Query Parameters</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>limit</td>
+                                    <td>integer</td>
+                                    <td>20</td>
+                                    <td>Number of results to return</td>
+                                </tr>
+                                <tr>
+                                    <td>offset</td>
+                                    <td>integer</td>
+                                    <td>0</td>
+                                    <td>Number of results to skip</td>
+                                </tr>
+                                <tr>
+                                    <td>type</td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Filter by move type</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/moves?type=Fire&limit=5</code>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="items" class="mt-5">
+                    <h2>Items API</h2>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /items
+                        </h3>
+                        <p>Returns a list of all Pokémon items.</p>
+                        
+                        <h4>Query Parameters</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>limit</td>
+                                    <td>integer</td>
+                                    <td>20</td>
+                                    <td>Number of results to return</td>
+                                </tr>
+                                <tr>
+                                    <td>offset</td>
+                                    <td>integer</td>
+                                    <td>0</td>
+                                    <td>Number of results to skip</td>
+                                </tr>
+                                <tr>
+                                    <td>category</td>
+                                    <td>string</td>
+                                    <td>-</td>
+                                    <td>Filter by item category</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/items?category=Berries&limit=5</code>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="teams" class="mt-5">
+                    <h2>Teams API</h2>
+                    
+                    <div class="endpoint get">
+                        <h3>
+                            <span class="method method-get">GET</span>
+                            /teams
+                        </h3>
+                        <p>Returns a list of all saved teams.</p>
+                        
+                        <h4>Example Request</h4>
+                        <div class="code-block">
+                            <code>GET /api/teams</code>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint post">
+                        <h3>
+                            <span class="method method-post">POST</span>
+                            /teams/analyze
+                        </h3>
+                        <p>Analyzes a team's strengths and weaknesses.</p>
+                        
+                        <h4>Request Body</h4>
+                        <div class="code-block">
+<pre>{
+  "pokemon": [
+    {"id": 25},  // Pikachu
+    {"id": 6},   // Charizard
+    {"id": 9},   // Blastoise
+    {"id": 3},   // Venusaur
+    {"id": 59},  // Arcanine
+    {"id": 143}  // Snorlax
+  ]
+}</pre>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="errors" class="mt-5">
+                    <h2>Error Handling</h2>
+                    
+                    <p>All errors return a JSON response with a <code>success</code> field set to <code>false</code> and a <code>message</code> field describing the error.</p>
+                    
+                    <h3>Common Error Codes</h3>
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th>Status Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>400</td>
+                                <td>Bad Request - The request was invalid or cannot be served.</td>
+                            </tr>
+                            <tr>
+                                <td>404</td>
+                                <td>Not Found - The requested resource does not exist.</td>
+                            </tr>
+                            <tr>
+                                <td>500</td>
+                                <td>Internal Server Error - Something went wrong on the server.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Example Error Response</h4>
+                    <div class="code-block">
+<pre>{
+  "success": false,
+  "message": "Pokemon with ID 9999 not found"
+}</pre>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scroll spy functionality
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.list-group-item');
+        
+        window.addEventListener('scroll', function() {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

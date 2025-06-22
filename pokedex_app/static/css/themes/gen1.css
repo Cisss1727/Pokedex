@@ -1,0 +1,96 @@
+/**
+ * Generation 1 Theme - Red/Blue/Green
+ * Based on the original GameBoy color scheme
+ */
+
+:root {
+    --gen-primary: #8bac0f;     /* Game Boy screen color */
+    --gen-secondary: #0f380f;   /* Game Boy dark green */
+    --gen-accent: #9bbc0f;      /* Game Boy light green */
+    --gen-dark: #306230;        /* Game Boy medium green */
+    --gen-light: #8bac0f;       /* Game Boy light mint green */
+    --gen-highlight: #306230;   /* Game Boy highlight green */
+    --gen-badge: #306230;       /* Badge color */
+    --gen-text: #0f380f;        /* Text color */
+    --gen-button: #306230;      /* Button color */
+}
+
+/* Generation header */
+.gen1-header {
+    background: linear-gradient(135deg, #ff1111 0%, #ff1111 46%, #ffffff 50%, #ffffff 54%, #ff1111 58%, #ff1111 100%);
+    border-bottom: 4px solid #000;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #000;
+    font-family: 'Press Start 2P', monospace, sans-serif;
+}
+
+/* Card styling for Gen 1 */
+.gen1-card {
+    border: 4px solid #306230;
+    background-color: #8bac0f;
+    box-shadow: 4px 4px 0 #0f380f;
+}
+
+.gen1-card .card-header {
+    background-color: #306230;
+    color: #8bac0f;
+    border-bottom: 2px solid #0f380f;
+}
+
+.gen1-card .card-body {
+    color: #0f380f;
+}
+
+/* Buttons for Gen 1 */
+.gen1-button {
+    background-color: #306230;
+    border: 2px solid #0f380f;
+    color: #8bac0f;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 2px 2px 0 #0f380f;
+}
+
+.gen1-button:hover {
+    background-color: #0f380f;
+    color: #9bbc0f;
+}
+
+/* Navigation for Gen 1 */
+.gen1-nav {
+    background-color: #306230;
+    border-bottom: 4px solid #0f380f;
+}
+
+.gen1-nav .nav-link {
+    color: #8bac0f !important;
+    font-weight: bold;
+}
+
+.gen1-nav .nav-link:hover {
+    color: #9bbc0f !important;
+    text-decoration: underline;
+}
+
+/* Pokemon card for Gen 1 */
+.gen1-pokemon-card {
+    border: 4px solid #306230;
+    background-color: #8bac0f;
+    transition: all 0.2s ease;
+}
+
+.gen1-pokemon-card:hover {
+    transform: scale(1.05);
+    box-shadow: 5px 5px 0 #0f380f;
+}
+
+.gen1-pokemon-card .pokemon-name {
+    color: #0f380f;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Font adjustments */
+.gen1-text {
+    font-family: 'Press Start 2P', monospace, sans-serif;
+} 

@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+
+{% block title %}Compare Pokémon - PokéApp{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+<style>
+    .compare-container {
+        margin: 30px 0;
+    }
+    
+    .compare-header {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .pokemon-compare-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    
+    .vs-badge {
+        font-size: 24px;
+        background: linear-gradient(135deg, #ff0000, #dc3545);
+        color: #fff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        z-index: 10;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        position: relative;
+        top: 30px;
+    }
+    
+    .stat-comparison {
+        display: flex;
+        padding: 5px 10px;
+        margin: 5px 0;
+        align-items: center;
+    }
+    
+    .stat-name {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .stat-value-left {
+        flex: 1;
+        text-align: right;
+        padding-right: 10px;
+    }
+    
+    .stat-value-right {
+        flex: 1;
+        text-align: left;
+        padding-left: 10px;
+    }
+    
+    .better-stat {
+        font-weight: bold;
+        color: #28a745;
+    }
+    
+    .worse-stat {
+        color: #dc3545;
+    }
+    
+    .equal-stat {
+        color: #6c757d;
+    }
+    
+    .pokemon-image-container {
+        height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .pokemon-image-container img {
+        max-height: 130px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container compare-container">
+    <div class="compare-header">
+        <h1 class="text-center mb-4">Pokémon Comparison</h1>
+        <p class="lead text-center">Compare stats, types, and abilities between Pokémon</p>
+    </div>
+    
+    {% if pokemon1 and pokemon2 %}
+        <div class="row">
+            <div class="col-md-5">
+                <div class="pokemon-compare-card">
+                    <div class="card-header text-center p-3">
+                        <h3>{{ pokemon1.name }}</h3>
+                        <h5 class="text-muted">#{{ pokemon1.id }}</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="pokemon-image-container">
+                            <img src="{{ url_for('static', filename='images/sprites/' + pokemon1.id|string + '.png') }}" alt="{{ pokemon1.name }}" class="img-fluid">
+                        </div>
+                        <div class="pokemon-types mb-3">
+                            {% for type in pokemon1.types %}
+                                <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="pokemon-abilities mb-3">
+                            <h5>Abilities</h5>
+                            {% for ability in pokemon1.abilities %}
+                                <span class="badge bg-secondary me-1">{{ ability }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-2 d-flex align-items-center justify-content-center position-relative">
+                <div class="vs-badge">VS</div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="pokemon-compare-card">
+                    <div class="card-header text-center p-3">
+                        <h3>{{ pokemon2.name }}</h3>
+                        <h5 class="text-muted">#{{ pokemon2.id }}</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="pokemon-image-container">
+                            <img src="{{ url_for('static', filename='images/sprites/' + pokemon2.id|string + '.png') }}" alt="{{ pokemon2.name }}" class="img-fluid">
+                        </div>
+                        <div class="pokemon-types mb-3">
+                            {% for type in pokemon2.types %}
+                                <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="pokemon-abilities mb-3">
+                            <h5>Abilities</h5>
+                            {% for ability in pokemon2.abilities %}
+                                <span class="badge bg-secondary me-1">{{ ability }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Stat Comparison</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- HP Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.hp > pokemon2.stats.hp %}better-stat{% elif pokemon1.stats.hp < pokemon2.stats.hp %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.hp }}
+                            </div>
+                            <div class="stat-name">HP</div>
+                            <div class="stat-value-right {% if pokemon2.stats.hp > pokemon1.stats.hp %}better-stat{% elif pokemon2.stats.hp < pokemon1.stats.hp %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.hp }}
+                            </div>
+                        </div>
+                        
+                        <!-- Attack Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.attack > pokemon2.stats.attack %}better-stat{% elif pokemon1.stats.attack < pokemon2.stats.attack %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.attack }}
+                            </div>
+                            <div class="stat-name">Attack</div>
+                            <div class="stat-value-right {% if pokemon2.stats.attack > pokemon1.stats.attack %}better-stat{% elif pokemon2.stats.attack < pokemon1.stats.attack %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.attack }}
+                            </div>
+                        </div>
+                        
+                        <!-- Defense Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.defense > pokemon2.stats.defense %}better-stat{% elif pokemon1.stats.defense < pokemon2.stats.defense %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.defense }}
+                            </div>
+                            <div class="stat-name">Defense</div>
+                            <div class="stat-value-right {% if pokemon2.stats.defense > pokemon1.stats.defense %}better-stat{% elif pokemon2.stats.defense < pokemon1.stats.defense %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.defense }}
+                            </div>
+                        </div>
+                        
+                        <!-- Special Attack Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.special_attack > pokemon2.stats.special_attack %}better-stat{% elif pokemon1.stats.special_attack < pokemon2.stats.special_attack %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.special_attack }}
+                            </div>
+                            <div class="stat-name">Special Attack</div>
+                            <div class="stat-value-right {% if pokemon2.stats.special_attack > pokemon1.stats.special_attack %}better-stat{% elif pokemon2.stats.special_attack < pokemon1.stats.special_attack %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.special_attack }}
+                            </div>
+                        </div>
+                        
+                        <!-- Special Defense Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.special_defense > pokemon2.stats.special_defense %}better-stat{% elif pokemon1.stats.special_defense < pokemon2.stats.special_defense %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.special_defense }}
+                            </div>
+                            <div class="stat-name">Special Defense</div>
+                            <div class="stat-value-right {% if pokemon2.stats.special_defense > pokemon1.stats.special_defense %}better-stat{% elif pokemon2.stats.special_defense < pokemon1.stats.special_defense %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.special_defense }}
+                            </div>
+                        </div>
+                        
+                        <!-- Speed Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.speed > pokemon2.stats.speed %}better-stat{% elif pokemon1.stats.speed < pokemon2.stats.speed %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.speed }}
+                            </div>
+                            <div class="stat-name">Speed</div>
+                            <div class="stat-value-right {% if pokemon2.stats.speed > pokemon1.stats.speed %}better-stat{% elif pokemon2.stats.speed < pokemon1.stats.speed %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.speed }}
+                            </div>
+                        </div>
+                        
+                        <!-- Total Comparison -->
+                        <div class="stat-comparison">
+                            <div class="stat-value-left {% if pokemon1.stats.total > pokemon2.stats.total %}better-stat{% elif pokemon1.stats.total < pokemon2.stats.total %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon1.stats.total }}
+                            </div>
+                            <div class="stat-name">Total</div>
+                            <div class="stat-value-right {% if pokemon2.stats.total > pokemon1.stats.total %}better-stat{% elif pokemon2.stats.total < pokemon1.stats.total %}worse-stat{% else %}equal-stat{% endif %}">
+                                {{ pokemon2.stats.total }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Type Effectiveness</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-center">{{ pokemon1.name }} Weaknesses</h5>
+                                <div class="type-effectiveness-container text-center">
+                                    {% for type, multiplier in pokemon1.type_effectiveness.items() %}
+                                        {% if multiplier > 1 %}
+                                            <span class="type-badge type-{{ type|lower }} m-1" data-bs-toggle="tooltip" title="{{ multiplier }}x damage">{{ type }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="text-center">{{ pokemon2.name }} Weaknesses</h5>
+                                <div class="type-effectiveness-container text-center">
+                                    {% for type, multiplier in pokemon2.type_effectiveness.items() %}
+                                        {% if multiplier > 1 %}
+                                            <span class="type-badge type-{{ type|lower }} m-1" data-bs-toggle="tooltip" title="{{ multiplier }}x damage">{{ type }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Select two Pokémon to compare</h3>
+                        <p class="lead">Use the search bar or browse Pokémon to add them to comparison</p>
+                        <a href="{{ url_for('pokemon.list_pokemon') }}" class="btn btn-primary mt-3">Browse Pokémon</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %} 

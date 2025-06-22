@@ -1,0 +1,75 @@
+/* Pokemon ID display */
+.pokemon-id {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--light-text);
+    margin-bottom: 0.25rem;
+}
+
+/* Type badges */
+.type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+/* Pokemon card for list view */
+.pokemon-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.pokemon-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+}
+
+.pokemon-card a {
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pokemon-card-image {
+    background-color: var(--card-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    height: 120px;
+    position: relative;
+}
+
+.pokemon-card-image img {
+    max-width: 96px;
+    max-height: 96px;
+    transition: transform 0.3s;
+}
+
+.pokemon-card:hover .pokemon-card-image img {
+    transform: scale(1.1);
+}
+
+.pokemon-card-info {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+} 

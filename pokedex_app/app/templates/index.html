@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Pokédex - Home{% endblock %}
+
+{% block styles %}
+<style>
+    .generation-tabs .nav-tabs {
+        padding: 0;
+        margin-bottom: 20px;
+        gap: 15px;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        padding-bottom: 5px;
+    }
+    
+    .generation-tabs .nav-link {
+        background-color: var(--card-background);
+        color: var(--text-color);
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-weight: 600;
+        min-width: 100px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .generation-tabs .nav-link:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .generation-tabs .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        font-weight: 700;
+    }
+    
+    .generation-info {
+        background-color: rgba(var(--primary-rgb), 0.05);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-bottom: 30px;
+        border: 1px solid var(--border-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title mb-4">Welcome to the Pokédex</h1>
+                <p class="hero-subtitle">Explore the world of Pokémon with our comprehensive information system. Find details on all Pokémon species, abilities, moves, and more.</p>
+                <div class="hero-buttons mt-5">
+                    <a href="{{ url_for('pokemon.pokemon_list') }}" class="btn btn-hero">Browse Pokémon</a>
+                    <a href="{{ url_for('team_builder.team_builder') }}" class="btn btn-outline-light ms-3">Team Builder</a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <img src="{{ url_for('static', filename='images/dragon-silhouette.png') }}" alt="Pokémon Silhouette" class="hero-image img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Generations Section -->
+<section class="generations-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2>Explore by Generation</h2>
+            <p class="text-muted">Discover Pokémon from different regions and game series</p>
+        </div>
+
+        <div class="generation-tabs">
+            <ul class="nav nav-tabs mb-4" id="generationTabs" role="tablist">
+                {% for gen_number in range(1, 10) %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if gen_number == 1 %}active{% endif %}" 
+                            id="gen{{ gen_number }}-tab" 
+                            data-bs-toggle="tab" 
+                            data-bs-target="#gen{{ gen_number }}" 
+                            type="button" 
+                            role="tab" 
+                            aria-controls="gen{{ gen_number }}" 
+                            aria-selected="{% if gen_number == 1 %}true{% else %}false{% endif %}">
+                        Gen {{ gen_number }}
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content" id="generationTabsContent">
+                {% for gen_number, pokemon_list in pokemon_by_gen.items() %}
+                <div class="tab-pane fade {% if gen_number == 1 %}show active{% endif %}" 
+                     id="gen{{ gen_number }}" 
+                     role="tabpanel" 
+                     aria-labelledby="gen{{ gen_number }}-tab">
+                    
+                    <div class="generation-info mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h3 class="mb-0">
+                                {% if gen_number == 1 %}Kanto Region
+                                {% elif gen_number == 2 %}Johto Region
+                                {% elif gen_number == 3 %}Hoenn Region
+                                {% elif gen_number == 4 %}Sinnoh Region
+                                {% elif gen_number == 5 %}Unova Region
+                                {% elif gen_number == 6 %}Kalos Region
+                                {% elif gen_number == 7 %}Alola Region
+                                {% elif gen_number == 8 %}Galar Region
+                                {% elif gen_number == 9 %}Paldea Region
+                                {% endif %}
+                            </h3>
+                            <a href="{{ url_for('pokemon.pokemon_list', generation=gen_number) }}" class="btn btn-sm btn-primary">View All</a>
+                        </div>
+
+                        <p>
+                            {% if gen_number == 1 %}
+                            The original 151 Pokémon from Red, Blue, and Yellow versions set in the Kanto region.
+                            {% elif gen_number == 2 %}
+                            Introducing 100 new Pokémon in Gold, Silver, and Crystal versions set in the Johto region.
+                            {% elif gen_number == 3 %}
+                            Featuring 135 new Pokémon in Ruby, Sapphire, and Emerald versions set in the Hoenn region.
+                            {% elif gen_number == 4 %}
+                            Adding 107 new Pokémon in Diamond, Pearl, and Platinum versions set in the Sinnoh region.
+                            {% elif gen_number == 5 %}
+                            Introducing 156 new Pokémon in Black and White versions set in the Unova region.
+                            {% elif gen_number == 6 %}
+                            Bringing 72 new Pokémon in X and Y versions set in the Kalos region.
+                            {% elif gen_number == 7 %}
+                            Adding 88 new Pokémon in Sun and Moon versions set in the Alola region.
+                            {% elif gen_number == 8 %}
+                            Featuring 96 new Pokémon in Sword and Shield versions set in the Galar region.
+                            {% elif gen_number == 9 %}
+                            Introducing new Pokémon in Scarlet and Violet versions set in the Paldea region.
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-4">
+                        {% for pokemon in pokemon_list %}
+                        <div class="col">
+                            <div class="pokemon-card">
+                                <a href="{{ url_for('pokemon.pokemon_detail', pokedex_id=pokemon.id) }}">
+                                    <div class="pokemon-card-image">
+                                        <img src="{{ pokemon.image.sprite }}" alt="{{ pokemon.name.english }}" loading="lazy">
+                                    </div>
+                                    <div class="pokemon-card-info">
+                                        <div class="pokemon-id">#{{ "%03d"|format(pokemon.id) }}</div>
+                                        <h5 class="pokemon-name">{{ pokemon.name.english }}</h5>
+                                        <div class="pokemon-types">
+                                            {% for type in pokemon.type %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2>Features</h2>
+            <p class="text-muted">Discover what our Pokédex has to offer</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4 class="feature-title">Advanced Search</h4>
+                    <p class="feature-description">Find Pokémon by name, type, generation, and more with our powerful search system.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h4 class="feature-title">Type Effectiveness</h4>
+                    <p class="feature-description">Calculate type matchups and weaknesses to plan your battle strategy.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="feature-title">Team Builder</h4>
+                    <p class="feature-description">Create and share your dream Pokémon teams with detailed analysis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

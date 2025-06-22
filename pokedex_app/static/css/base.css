@@ -1,0 +1,799 @@
+:root {
+    --primary-color: #94C9A9; /* Pastel Green */
+    --secondary-color: #FFC09F; /* Pastel Peach */
+    --accent-color: #FFEE93; /* Pastel Yellow */
+    --background-color: #FCFCFC; /* Light Background */
+    --card-background: #FFFFFF; /* Card Background */
+    --text-color: #4A4A4A; /* Dark Text */
+    --light-text: #6C757D; /* Light Text */
+    --border-color: #E9ECEF; /* Light Border */
+    --header-background: #FFFFFF; /* Header Background */
+    --footer-background: #F8F9FA; /* Footer Background */
+    --border-radius: 8px;
+    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --transition-speed: 0.3s;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+/* Header & Navigation */
+header {
+    background-color: var(--header-background);
+    box-shadow: var(--box-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar {
+    padding: 0.75rem 0;
+}
+
+.logo {
+    color: var(--primary-color);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+    transition: all var(--transition-speed);
+}
+
+.logo:hover {
+    color: var(--secondary-color);
+}
+
+.navbar .nav-link {
+    color: var(--text-color) !important;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    transition: all var(--transition-speed);
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary-color) !important;
+    background-color: rgba(148, 201, 169, 0.1);
+}
+
+.navbar-toggler {
+    border: none;
+    color: var(--text-color);
+    padding: 0.5rem;
+}
+
+/* Dropdown styling */
+.dropdown-menu {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow);
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all var(--transition-speed);
+}
+
+.dropdown-item:hover {
+    background-color: rgba(148, 201, 169, 0.1);
+    color: var(--primary-color);
+}
+
+/* Search form styling */
+.search-form {
+    margin-left: 1rem;
+}
+
+.search-input {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    min-width: 200px;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    padding: 0.5rem 1rem;
+}
+
+.search-input:focus {
+    background-color: var(--card-background);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(148, 201, 169, 0.2);
+    color: var(--text-color);
+}
+
+.search-btn {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: white;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    padding: 0.5rem 1rem;
+    transition: all var(--transition-speed);
+}
+
+.search-btn:hover {
+    background-color: #7AB893; /* Darker shade */
+    border-color: #7AB893;
+}
+
+/* Cards and Containers */
+.card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: rgba(148, 201, 169, 0.1);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+}
+
+.pokemon-card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    height: 100%;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow);
+}
+
+.pokemon-card a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.pokemon-card-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: #F8F9FA;
+    height: 120px;
+    transition: background-color var(--transition-speed);
+}
+
+.pokemon-card:hover .pokemon-card-image {
+    background-color: rgba(148, 201, 169, 0.1);
+}
+
+.pokemon-card-image img {
+    max-width: 100%;
+    max-height: 100%;
+    transition: transform var(--transition-speed);
+}
+
+.pokemon-card:hover .pokemon-card-image img {
+    transform: scale(1.1);
+}
+
+.pokemon-card-info {
+    padding: 1rem;
+    text-align: center;
+}
+
+.pokemon-id {
+    font-size: 0.8rem;
+    color: var(--light-text);
+    margin-bottom: 0.25rem;
+}
+
+.pokemon-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-color);
+}
+
+/* Type Badges */
+.pokemon-types {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+.type-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Type Colors - Pastel Variants */
+.type-normal { background-color: #A8A878; }
+.type-fire { background-color: #F5AC78; }
+.type-water { background-color: #98BDFF; }
+.type-grass { background-color: #A7DB8D; }
+.type-electric { background-color: #FAE078; }
+.type-ice { background-color: #BCE6E6; }
+.type-fighting { background-color: #D67873; }
+.type-poison { background-color: #C183C1; }
+.type-ground { background-color: #EBD69D; }
+.type-flying { background-color: #C6B7F5; }
+.type-psychic { background-color: #FA92B2; }
+.type-bug { background-color: #C6D16E; }
+.type-rock { background-color: #D1C17D; }
+.type-ghost { background-color: #A292BC; }
+.type-dark { background-color: #A29288; }
+.type-dragon { background-color: #A27DFA; }
+.type-steel { background-color: #D1D1E0; }
+.type-fairy { background-color: #F4BDC9; }
+
+/* Search and Filters */
+.search-section {
+    margin-bottom: 2rem;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow);
+}
+
+.filter-dropdown .dropdown-menu {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.filter-dropdown .dropdown-item {
+    color: var(--text-color);
+}
+
+.filter-dropdown .dropdown-item:hover {
+    background-color: rgba(148, 201, 169, 0.1);
+}
+
+.badge-filter {
+    background-color: rgba(148, 201, 169, 0.2);
+    border-radius: 50px;
+    padding: 0.35rem 0.75rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.badge-filter .close {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Buttons */
+.btn {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    transition: all var(--transition-speed);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #7AB893; /* Darker shade */
+    border-color: #7AB893;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-light {
+    color: var(--text-color);
+    border-color: var(--border-color);
+    background-color: transparent;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(148, 201, 169, 0.1);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    padding: 4rem 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 100%;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    color: var(--light-text);
+}
+
+.hero-image {
+    max-height: 300px;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+}
+
+.btn-hero {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-speed);
+}
+
+.btn-hero:hover {
+    background-color: #7AB893; /* Darker shade */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+/* Features Section */
+.features-section {
+    padding: 3rem 0;
+}
+
+.features-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    height: 100%;
+    transition: transform var(--transition-speed), background-color var(--transition-speed);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    transition: transform var(--transition-speed);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.2);
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.feature-description {
+    color: var(--light-text);
+}
+
+/* Section Header */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    color: var(--text-color);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.section-header p {
+    color: var(--light-text);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--footer-background);
+    padding: 3rem 0 1.5rem;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer h5 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+.footer a {
+    color: var(--text-color);
+    transition: color var(--transition-speed);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.footer a:hover {
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.footer hr {
+    border-color: var(--border-color);
+    margin: 2rem 0;
+}
+
+.footer .copyright {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+}
+
+.pagination .page-item .page-link {
+    background-color: var(--card-background);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: rgba(148, 201, 169, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Generation Tabs */
+.generation-tabs {
+    margin-bottom: 2.5rem;
+}
+
+.generation-tabs .nav-tabs {
+    border-bottom-color: var(--border-color);
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.generation-tabs .nav-tabs::-webkit-scrollbar {
+    height: 5px;
+}
+
+.generation-tabs .nav-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+}
+
+.generation-tabs .nav-link {
+    padding: 0.6rem 1rem;
+    white-space: nowrap;
+    min-width: 85px;
+    text-align: center;
+}
+
+.generation-info {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.pokemon-card {
+    margin-bottom: 1rem;
+    height: 100%;
+}
+
+.pokemon-card-image {
+    height: 110px;
+    padding: 1rem;
+}
+
+.pokemon-card-info {
+    padding: 0.75rem;
+}
+
+/* Fix pokemon IDs to show correctly formatted */
+.pokemon-id {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--light-text);
+    margin-bottom: 0.25rem;
+}
+
+/* Team builder specific styles */
+.team-member {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--card-background);
+}
+
+.team-member:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(148, 201, 169, 0.05);
+}
+
+.team-member.occupied {
+    border-style: solid;
+    border-color: var(--primary-color);
+}
+
+.team-member img {
+    max-width: 96px;
+    max-height: 96px;
+}
+
+.team-member-remove {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(220, 53, 69, 0.8);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+}
+
+.team-member.occupied:hover .team-member-remove {
+    display: block;
+}
+
+/* Make Pokemon list display in order */
+.pokemon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.25rem;
+    }
+    
+    .hero-section {
+        padding: 4rem 1.5rem;
+    }
+    
+    .navbar {
+        padding: 0.5rem 0;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .hero-content {
+        padding: 1rem 0;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .hero-section {
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-section {
+        padding: 3rem 1rem;
+    }
+    
+    .pokemon-card-image {
+        height: 100px;
+    }
+    
+    .feature-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .search-input {
+        min-width: 160px;
+    }
+    
+    .hero-content {
+        padding: 0 0.5rem;
+    }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Modal Styling */
+.modal-content {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+    padding: 1.25rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+    padding: 1.25rem;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.scroll-to-top.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+    background-color: #7AB893;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional spacing fixes */
+section {
+    padding: 2rem 0;
+} 

@@ -1,0 +1,105 @@
+/**
+ * Generation 2 Theme - Gold/Silver/Crystal
+ * Based on the Gold and Silver color scheme
+ */
+
+:root {
+    --gen-primary: #daa520;      /* Gold color */
+    --gen-secondary: #c0c0c0;    /* Silver color */
+    --gen-accent: #4fd9ff;       /* Crystal blue color */
+    --gen-dark: #333333;         /* Dark gray */
+    --gen-light: #f5f5f5;        /* Light gray */
+    --gen-highlight: #ffd700;    /* Bright gold */
+    --gen-badge: #b4a7d6;        /* Badge color */
+    --gen-text: #333333;         /* Text color */
+    --gen-button: #daa520;       /* Button color */
+}
+
+/* Generation header */
+.gen2-header {
+    background: linear-gradient(135deg, #daa520 0%, #daa520 46%, #c0c0c0 50%, #c0c0c0 54%, #daa520 58%, #daa520 100%);
+    border-bottom: 4px solid #333;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #333;
+    font-family: 'Gaegu', cursive, sans-serif;
+}
+
+/* Card styling for Gen 2 */
+.gen2-card {
+    border: 4px solid #c0c0c0;
+    background-color: #f5f5f5;
+    box-shadow: 4px 4px 0 #daa520;
+}
+
+.gen2-card .card-header {
+    background-color: #daa520;
+    color: #333333;
+    border-bottom: 2px solid #c0c0c0;
+}
+
+.gen2-card .card-body {
+    color: #333333;
+}
+
+/* Buttons for Gen 2 */
+.gen2-button {
+    background-color: #daa520;
+    border: 2px solid #c0c0c0;
+    color: #333333;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 2px 2px 0 #333;
+}
+
+.gen2-button:hover {
+    background-color: #c0c0c0;
+    color: #333333;
+    box-shadow: 2px 2px 0 #daa520;
+}
+
+/* Navigation for Gen 2 */
+.gen2-nav {
+    background: linear-gradient(to bottom, #daa520, #c0c0c0);
+    border-bottom: 4px solid #333;
+}
+
+.gen2-nav .nav-link {
+    color: #333333 !important;
+    font-weight: bold;
+}
+
+.gen2-nav .nav-link:hover {
+    color: #4fd9ff !important;
+    text-shadow: 0 0 3px #fff;
+}
+
+/* Pokemon card for Gen 2 */
+.gen2-pokemon-card {
+    border: 3px solid #daa520;
+    background: linear-gradient(135deg, #f5f5f5 0%, #c0c0c0 100%);
+    transition: all 0.2s ease;
+}
+
+.gen2-pokemon-card:hover {
+    transform: scale(1.05);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    border-color: #ffd700;
+}
+
+.gen2-pokemon-card .pokemon-name {
+    color: #333333;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Font adjustments */
+.gen2-text {
+    font-family: 'Gaegu', cursive, sans-serif;
+}
+
+/* Special effects */
+.gen2-legendary {
+    background: linear-gradient(45deg, #daa520, #ffd700, #daa520);
+    background-size: 200% 200%;
+    animation: gold-shimmer 2s ease infinite;
+} 

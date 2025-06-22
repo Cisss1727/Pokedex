@@ -1,0 +1,311 @@
+/* Mobile first approach */
+
+/* Base styles for small devices (xs and sm) */
+.pokemon-card {
+    margin-bottom: 1rem;
+}
+
+.pokemon-card-image img {
+    max-height: 80px;
+}
+
+.pokemon-name {
+    font-size: 0.9rem;
+}
+
+.type-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+}
+
+.pokemon-detail-container .pokemon-name {
+    font-size: 1.5rem;
+}
+
+.stat-item {
+    grid-template-columns: 100px 40px 1fr;
+}
+
+/* Styles for medium devices (md) */
+@media (min-width: 768px) {
+    .pokemon-card-image img {
+        max-height: 100px;
+    }
+    
+    .pokemon-name {
+        font-size: 1rem;
+    }
+    
+    .type-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .pokemon-detail-container .pokemon-name {
+        font-size: 1.8rem;
+    }
+    
+    .stat-item {
+        grid-template-columns: 120px 40px 1fr;
+    }
+    
+    .hero-section {
+        padding: 4rem 0;
+    }
+}
+
+/* Styles for large devices (lg) */
+@media (min-width: 992px) {
+    .pokemon-card-image img {
+        max-height: 120px;
+    }
+    
+    .pokemon-name {
+        font-size: 1.1rem;
+    }
+    
+    .pokemon-detail-container .pokemon-name {
+        font-size: 2rem;
+    }
+    
+    .hero-section {
+        padding: 5rem 0;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+    }
+}
+
+/* Styles for extra large devices (xl) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Custom styles for specific sections */
+
+/* Evolution chain responsive layout */
+@media (max-width: 767px) {
+    .evolution-chain-container .row {
+        flex-direction: column;
+    }
+    
+    .evolution-chain-container .col-md-4,
+    .evolution-chain-container .col-md-6 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .evolution-arrow {
+        margin: 1rem 0;
+        flex-direction: row;
+    }
+    
+    .evolution-arrow i {
+        transform: rotate(90deg);
+        margin-right: 0.5rem;
+    }
+    
+    .evolution-method {
+        transform: none;
+        margin-top: 0;
+        margin-left: 0.5rem;
+    }
+}
+
+/* Generation tabs responsive */
+@media (max-width: 767px) {
+    .generation-tabs .nav-link {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Pokemon detail page responsive */
+@media (max-width: 767px) {
+    .pokemon-detail-container .card {
+        margin-bottom: 1rem;
+    }
+    
+    .pokemon-image-container img {
+        max-height: 200px;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Footer responsive */
+@media (max-width: 767px) {
+    .footer {
+        text-align: center;
+    }
+    
+    .footer .col-md-4 {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Make type effectiveness badges stack well on small screens */
+@media (max-width: 576px) {
+    .type-effectiveness-container .type-badge {
+        margin-bottom: 0.3rem;
+    }
+}
+
+/* Responsive styles for Pokédex Web Application */
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+    /* Container padding adjustments */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    /* Navbar adjustments */
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    /* Hero section adjustments */
+    .hero-section {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+    
+    /* Card grid adjustments */
+    .pokemon-card-image {
+        height: 90px;
+    }
+    
+    /* Pokemon details page */
+    .pokemon-detail-image {
+        max-width: 200px;
+        margin: 0 auto 1.5rem;
+        display: block;
+    }
+    
+    /* Footer adjustments */
+    .footer h5 {
+        margin-top: 1.5rem;
+    }
+    
+    /* Team builder */
+    .team-slot {
+        height: 120px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    /* Hero section */
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    /* Pokemon cards adjustments */
+    .pokemon-card-image {
+        height: 100px;
+    }
+    
+    /* Team builder */
+    .team-slot {
+        height: 130px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    /* Pokemon details page */
+    .pokemon-detail-image {
+        max-width: 250px;
+    }
+    
+    /* Generation tabs */
+    .generation-tabs .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    /* No specific adjustments needed */
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+/* Dark mode preferences */
+@media (prefers-color-scheme: dark) {
+    /* These styles apply only if user prefers dark mode */
+    body {
+        background-color: var(--dark-color);
+        color: var(--text-color);
+    }
+    
+    .pokemon-card {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .pokemon-card:hover {
+        transform: none !important;
+    }
+    
+    .feature-card:hover {
+        transform: none !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    /* Hide unnecessary elements when printing */
+    .navbar,
+    .footer,
+    .hero-section,
+    .search-section,
+    .features-section {
+        display: none !important;
+    }
+    
+    body {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .pokemon-detail-container {
+        page-break-inside: avoid;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+} 

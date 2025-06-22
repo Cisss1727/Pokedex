@@ -1,0 +1,117 @@
+/**
+ * Generation 3 Theme - Ruby/Sapphire/Emerald
+ * Based on the Hoenn region's tropical design
+ */
+
+:root {
+    --gen-primary: #a00000;       /* Ruby red */
+    --gen-secondary: #0000a0;     /* Sapphire blue */
+    --gen-accent: #00a000;        /* Emerald green */
+    --gen-dark: #383838;          /* Dark gray */
+    --gen-light: #f8f8f8;         /* Light gray */
+    --gen-highlight: #35ced0;     /* Hoenn sea blue */
+    --gen-badge: #00a000;         /* Badge color */
+    --gen-text: #333333;          /* Text color */
+    --gen-button: #00a000;        /* Button color */
+}
+
+/* Generation header */
+.gen3-header {
+    background: linear-gradient(135deg, var(--gen-primary) 0%, var(--gen-primary) 40%, var(--gen-secondary) 60%, var(--gen-secondary) 100%);
+    border-bottom: 4px solid var(--gen-accent);
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #000;
+    font-family: 'Exo 2', sans-serif;
+}
+
+/* Card styling for Gen 3 */
+.gen3-card {
+    border: 3px solid var(--gen-accent);
+    background-color: var(--gen-light);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.gen3-card .card-header {
+    background: linear-gradient(to right, var(--gen-primary), var(--gen-secondary));
+    color: white;
+    border-bottom: 2px solid var(--gen-accent);
+    border-radius: 7px 7px 0 0;
+}
+
+.gen3-card .card-body {
+    color: var(--gen-text);
+}
+
+/* Buttons for Gen 3 */
+.gen3-button {
+    background-color: var(--gen-accent);
+    border: 2px solid #008000;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.gen3-button:hover {
+    background-color: #008500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation for Gen 3 */
+.gen3-nav {
+    background: linear-gradient(to bottom, var(--gen-primary), var(--gen-secondary));
+    border-bottom: 4px solid var(--gen-accent);
+}
+
+.gen3-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.gen3-nav .nav-link:hover {
+    color: var(--gen-highlight) !important;
+    text-shadow: 0 0 5px var(--gen-highlight);
+}
+
+/* Pokemon card for Gen 3 */
+.gen3-pokemon-card {
+    border: 3px solid var(--gen-accent);
+    background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.gen3-pokemon-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gen3-pokemon-card .pokemon-name {
+    color: var(--gen-text);
+    font-weight: bold;
+    font-family: 'Exo 2', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Special animations */
+@keyframes emerald-glow {
+    0% { box-shadow: 0 0 5px var(--gen-accent); }
+    50% { box-shadow: 0 0 20px var(--gen-accent); }
+    100% { box-shadow: 0 0 5px var(--gen-accent); }
+}
+
+.gen3-legendary {
+    animation: emerald-glow 2s infinite;
+    border-color: var(--gen-accent);
+}
+
+/* Font adjustments */
+.gen3-text {
+    font-family: 'Exo 2', sans-serif;
+} 

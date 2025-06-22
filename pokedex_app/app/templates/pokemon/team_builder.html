@@ -1,0 +1,947 @@
+{% extends 'base.html' %}
+
+{% block title %}Team Builder - PokéApp{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+<style>
+    .team-container {
+        margin-top: 30px;
+    }
+    
+    .team-member {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .team-member:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(var(--primary-rgb), 0.05);
+    }
+    
+    .team-member.occupied {
+        border-style: solid;
+        background-color: #fff;
+        height: auto;
+        padding: 10px;
+    }
+    
+    .team-member img {
+        max-width: 96px;
+        max-height: 96px;
+    }
+    
+    .team-member-id {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .team-member-name {
+        font-weight: bold;
+        margin-top: 8px;
+    }
+    
+    .team-member-types {
+        margin-top: 5px;
+    }
+    
+    .team-member-moves {
+        margin-top: 8px;
+        width: 100%;
+    }
+    
+    .move-badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        margin: 2px;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        border: 1px solid #ddd;
+    }
+    
+    .move-badge.empty {
+        border-style: dashed;
+        color: #6c757d;
+    }
+    
+    .team-member-remove {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: rgba(220, 53, 69, 0.8);
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        text-align: center;
+        line-height: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .team-member.occupied:hover .team-member-remove {
+        display: block;
+    }
+    
+    .pokemon-search-results {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
+    
+    .pokemon-search-item {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .pokemon-search-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .pokemon-search-item img {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+    
+    .type-coverage-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .type-coverage-item {
+        text-align: center;
+        padding: 8px;
+        border-radius: 4px;
+    }
+    
+    .coverage-good {
+        background-color: rgba(40, 167, 69, 0.2);
+    }
+    
+    .coverage-neutral {
+        background-color: rgba(108, 117, 125, 0.1);
+    }
+    
+    .coverage-weak {
+        background-color: rgba(220, 53, 69, 0.2);
+    }
+    
+    .weakness-count {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .suggestion-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .suggestion-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container team-container">
+    <h1 class="mb-4">Pokémon Team Builder</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Team Members Grid -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Your Team</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for i in range(1, 7) %}
+                            <div class="col-md-4 col-6 mb-4">
+                                <div class="team-member position-relative" id="team-slot-{{ i }}">
+                                    <div class="team-member-placeholder">
+                                        <i class="fas fa-plus fa-2x text-muted"></i>
+                                        <p class="text-muted mt-2">Add Pokémon</p>
+                                    </div>
+                                    <div class="team-member-info" style="display: none;">
+                                        <div class="team-member-id"></div>
+                                        <img src="" alt="" class="team-member-image">
+                                        <div class="team-member-name"></div>
+                                        <div class="team-member-types"></div>
+                                        <div class="team-member-moves">
+                                            <div class="d-flex flex-wrap justify-content-center">
+                                                <span class="move-badge empty" data-move-slot="1">+ Add Move</span>
+                                                <span class="move-badge empty" data-move-slot="2">+ Add Move</span>
+                                                <span class="move-badge empty" data-move-slot="3">+ Add Move</span>
+                                                <span class="move-badge empty" data-move-slot="4">+ Add Move</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="team-member-remove">×</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-danger me-2" id="clearTeamBtn">Clear Team</button>
+                        <button class="btn btn-success" id="analyzeTeamBtn">Analyze Team</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Team Analysis -->
+            <div class="card mb-4" id="team-analysis" style="display: none;">
+                <div class="card-header">
+                    <h4 class="mb-0">Team Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Type Coverage</h5>
+                    <p>How well your team can hit other types:</p>
+                    <div class="type-coverage-grid" id="offensive-coverage">
+                        <!-- Will be filled by JavaScript -->
+                    </div>
+                    
+                    <h5 class="mt-4">Team Weaknesses</h5>
+                    <p>Types that are strong against multiple Pokémon in your team:</p>
+                    <div class="type-coverage-grid" id="defensive-weaknesses">
+                        <!-- Will be filled by JavaScript -->
+                    </div>
+                    
+                    <h5 class="mt-4">Balance Analysis</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6>Physical/Special Balance</h6>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-danger" id="physical-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">Physical</div>
+                                        <div class="progress-bar bg-primary" id="special-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">Special</div>
+                                    </div>
+                                    <div class="text-center mt-2" id="balance-text"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h6>Average Base Stats</h6>
+                                    <div id="avg-stats"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Pokemon Search -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Search Pokémon</h4>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="pokemon-search" placeholder="Search by name or ID">
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="pokemon-search-results" id="pokemon-search-results"></div>
+                </div>
+            </div>
+            
+            <!-- Team Suggestions -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Team Suggestions</h4>
+                </div>
+                <div class="card-body">
+                    <div id="team-suggestions">
+                        <p class="text-center text-muted">
+                            Add Pokémon to your team to get suggestions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Pokemon Selection -->
+    <div class="modal fade" id="pokemonSelectionModal" tabindex="-1" aria-labelledby="pokemonSelectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pokemonSelectionModalLabel">Select a Pokémon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="modal-pokemon-search" placeholder="Search Pokémon">
+                        <button class="btn btn-primary" type="button" id="modalSearchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="modal-search-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Move Selection -->
+    <div class="modal fade" id="moveSelectionModal" tabindex="-1" aria-labelledby="moveSelectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="moveSelectionModalLabel">Select a Move</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="modal-move-search" placeholder="Search Moves">
+                        <button class="btn btn-primary" type="button" id="modalMoveSearchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="modal-move-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentTeam = Array(6).fill(null);
+    let currentSlot = null;
+    let currentMoveSlot = null;
+    let currentPokemonId = null;
+    let allTypes = [];
+    let typeData = {};
+    
+    // Get all types data through API when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/types')
+            .then(response => response.json())
+            .then(data => {
+                allTypes = data.types || [];
+                
+                // Convert types array to a more usable format
+                allTypes.forEach(type => {
+                    typeData[type.name.english] = {
+                        color: type.color,
+                        weaknesses: type.weaknesses || [],
+                        strengths: type.strengths || []
+                    };
+                });
+            })
+            .catch(error => console.error('Error fetching types:', error));
+            
+        // Add event listeners to team slots
+        document.querySelectorAll('.team-member').forEach((slot, index) => {
+            slot.addEventListener('click', () => openPokemonSearch(index + 1));
+            
+            // Add event listener to remove button
+            const removeBtn = slot.querySelector('.team-member-remove');
+            removeBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                removePokemon(index + 1);
+            });
+        });
+        
+        // Add event listeners to buttons
+        document.getElementById('clearTeamBtn').addEventListener('click', clearTeam);
+        document.getElementById('analyzeTeamBtn').addEventListener('click', analyzeTeam);
+        document.getElementById('searchBtn').addEventListener('click', searchPokemon);
+        document.getElementById('modalSearchBtn').addEventListener('click', modalSearchPokemon);
+        document.getElementById('modalMoveSearchBtn').addEventListener('click', searchMoves);
+        
+        // Add event listeners for search inputs
+        document.getElementById('pokemon-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchPokemon();
+        });
+        
+        document.getElementById('modal-pokemon-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') modalSearchPokemon();
+        });
+        
+        document.getElementById('modal-move-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchMoves();
+        });
+        
+        // Initial setup of move badge click handlers
+        setupMoveBadgeHandlers();
+    });
+    
+    function openPokemonSearch(slotNumber) {
+        currentSlot = slotNumber;
+        const modal = new bootstrap.Modal(document.getElementById('pokemonSelectionModal'));
+        modal.show();
+    }
+    
+    function modalSearchPokemon() {
+        const searchTerm = document.getElementById('modal-pokemon-search').value.trim();
+        if (searchTerm.length < 2) return;
+        
+        fetch(`/api/pokemon?q=${encodeURIComponent(searchTerm)}&limit=20`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('modal-search-results');
+                resultsContainer.innerHTML = '';
+                
+                if (data.pokemon && data.pokemon.length > 0) {
+                    data.pokemon.forEach(pokemon => {
+                        const pokemonElement = document.createElement('div');
+                        pokemonElement.className = 'pokemon-search-item';
+                        pokemonElement.addEventListener('click', () => selectPokemon(pokemon, currentSlot));
+                        
+                        const types = pokemon.types.map(type => 
+                            `<span class="type-badge type-${type.toLowerCase()}">${type}</span>`
+                        ).join(' ');
+                        
+                        pokemonElement.innerHTML = `
+                            <img src="${pokemon.image.sprite}" alt="${pokemon.name.english}" 
+                                 onerror="this.onerror=null; this.src='/static/images/placeholder.png';">
+                            <div>
+                                <div><strong>${pokemon.name.english}</strong> <span class="text-muted">#${pokemon.id}</span></div>
+                                <div>${types}</div>
+                            </div>
+                        `;
+                        
+                        resultsContainer.appendChild(pokemonElement);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<div class="text-center p-3">No Pokémon found</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error searching for Pokémon:', error);
+                document.getElementById('modal-search-results').innerHTML = 
+                    '<div class="text-center p-3 text-danger">Error searching for Pokémon</div>';
+            });
+    }
+    
+    function selectPokemon(pokemon, slot) {
+        // Close the modal
+        bootstrap.Modal.getInstance(document.getElementById('pokemonSelectionModal')).hide();
+        
+        // Initialize moves array for this pokemon
+        pokemon.moves = Array(4).fill(null);
+        
+        // Update the team slot
+        const teamSlot = document.getElementById(`team-slot-${slot}`);
+        teamSlot.classList.add('occupied');
+        
+        // Update placeholder and info visibility
+        teamSlot.querySelector('.team-member-placeholder').style.display = 'none';
+        const infoElement = teamSlot.querySelector('.team-member-info');
+        infoElement.style.display = 'block';
+        
+        // Set Pokemon data
+        infoElement.querySelector('.team-member-id').textContent = `#${pokemon.id}`;
+        infoElement.querySelector('.team-member-image').src = pokemon.image.sprite;
+        infoElement.querySelector('.team-member-image').alt = pokemon.name.english;
+        infoElement.querySelector('.team-member-name').textContent = pokemon.name.english;
+        
+        // Set types
+        const typesHTML = pokemon.types.map(type => 
+            `<span class="type-badge type-${type.toLowerCase()}">${type}</span>`
+        ).join(' ');
+        infoElement.querySelector('.team-member-types').innerHTML = typesHTML;
+        
+        // Reset move badges
+        const moveBadges = teamSlot.querySelectorAll('.move-badge');
+        moveBadges.forEach((badge, i) => {
+            badge.textContent = '+ Add Move';
+            badge.className = 'move-badge empty';
+            badge.dataset.moveSlot = i + 1;
+        });
+        
+        // Update team array
+        currentTeam[slot - 1] = pokemon;
+        
+        // Update suggestions
+        updateTeamSuggestions();
+    }
+    
+    function removePokemon(slot) {
+        // Reset the team slot
+        const teamSlot = document.getElementById(`team-slot-${slot}`);
+        teamSlot.classList.remove('occupied');
+        
+        // Show placeholder, hide info
+        teamSlot.querySelector('.team-member-placeholder').style.display = 'block';
+        teamSlot.querySelector('.team-member-info').style.display = 'none';
+        
+        // Reset move badges
+        const moveBadges = teamSlot.querySelectorAll('.move-badge');
+        moveBadges.forEach((badge, i) => {
+            badge.textContent = '+ Add Move';
+            badge.className = 'move-badge empty';
+            badge.dataset.moveSlot = i + 1;
+        });
+        
+        // Clear team array
+        currentTeam[slot - 1] = null;
+        
+        // Update suggestions
+        updateTeamSuggestions();
+        
+        // Hide analysis if no Pokémon left
+        if (currentTeam.every(p => p === null)) {
+            document.getElementById('team-analysis').style.display = 'none';
+        }
+    }
+    
+    function clearTeam() {
+        for (let i = 1; i <= 6; i++) {
+            removePokemon(i);
+        }
+        document.getElementById('team-analysis').style.display = 'none';
+    }
+    
+    function analyzeTeam() {
+        // Only analyze if there's at least one Pokémon
+        if (currentTeam.every(p => p === null)) {
+            alert('Add at least one Pokémon to analyze your team.');
+            return;
+        }
+        
+        // Show analysis section
+        document.getElementById('team-analysis').style.display = 'block';
+        
+        // Calculate type coverage (offensive)
+        const offensiveCoverage = calculateOffensiveCoverage();
+        displayTypeCoverage(offensiveCoverage, 'offensive-coverage');
+        
+        // Calculate team weaknesses (defensive)
+        const defensiveWeaknesses = calculateDefensiveWeaknesses();
+        displayTypeWeaknesses(defensiveWeaknesses, 'defensive-weaknesses');
+        
+        // Calculate physical/special balance
+        calculateStatBalance();
+    }
+    
+    function calculateOffensiveCoverage() {
+        // Count how many Pokémon in the team can hit each type for super effective damage
+        const coverage = {};
+        
+        // Initialize all types with 0
+        allTypes.forEach(type => {
+            coverage[type.name.english] = 0;
+        });
+        
+        // Count strengths of each Pokémon's types
+        currentTeam.forEach(pokemon => {
+            if (!pokemon) return;
+            
+            pokemon.types.forEach(type => {
+                const strengths = typeData[type]?.strengths || [];
+                strengths.forEach(strength => {
+                    coverage[strength]++;
+                });
+            });
+        });
+        
+        return coverage;
+    }
+    
+    function calculateDefensiveWeaknesses() {
+        // Count how many Pokémon in the team are weak to each type
+        const weaknesses = {};
+        
+        // Initialize all types with 0
+        allTypes.forEach(type => {
+            weaknesses[type.name.english] = 0;
+        });
+        
+        // Count weaknesses of each Pokémon's types
+        currentTeam.forEach(pokemon => {
+            if (!pokemon) return;
+            
+            // For each type in the Pokédex
+            allTypes.forEach(attackType => {
+                const typeName = attackType.name.english;
+                
+                // Check if this Pokémon is weak to this type
+                let effective = 1;
+                pokemon.types.forEach(defenseType => {
+                    if (typeData[defenseType]?.weaknesses?.includes(typeName)) {
+                        effective *= 2;  // Weak to this type
+                    } else if (typeData[defenseType]?.strengths?.includes(typeName)) {
+                        effective *= 0.5;  // Resistant to this type
+                    }
+                });
+                
+                if (effective > 1) {
+                    weaknesses[typeName]++;
+                }
+            });
+        });
+        
+        return weaknesses;
+    }
+    
+    function displayTypeCoverage(coverage, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        
+        allTypes.forEach(type => {
+            const typeName = type.name.english;
+            const count = coverage[typeName];
+            
+            let coverageClass;
+            if (count >= 3) coverageClass = 'coverage-good';
+            else if (count >= 1) coverageClass = 'coverage-neutral';
+            else coverageClass = 'coverage-weak';
+            
+            container.innerHTML += `
+                <div class="type-coverage-item ${coverageClass}">
+                    <div class="type-badge type-${typeName.toLowerCase()}">${typeName}</div>
+                    <div class="weakness-count">${count}</div>
+                </div>
+            `;
+        });
+    }
+    
+    function displayTypeWeaknesses(weaknesses, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        
+        allTypes.forEach(type => {
+            const typeName = type.name.english;
+            const count = weaknesses[typeName];
+            
+            let weaknessClass;
+            if (count >= 3) weaknessClass = 'coverage-weak';
+            else if (count >= 1) weaknessClass = 'coverage-neutral';
+            else weaknessClass = 'coverage-good';
+            
+            container.innerHTML += `
+                <div class="type-coverage-item ${weaknessClass}">
+                    <div class="type-badge type-${typeName.toLowerCase()}">${typeName}</div>
+                    <div class="weakness-count">${count}</div>
+                </div>
+            `;
+        });
+    }
+    
+    function calculateStatBalance() {
+        // Get average physical and special stats
+        let physicalTotal = 0;
+        let specialTotal = 0;
+        let count = 0;
+        let hpTotal = 0;
+        let atkTotal = 0;
+        let defTotal = 0;
+        let spAtkTotal = 0;
+        let spDefTotal = 0;
+        let spdTotal = 0;
+        
+        currentTeam.forEach(pokemon => {
+            if (!pokemon) return;
+            count++;
+            
+            physicalTotal += (pokemon.stats.attack + pokemon.stats.defense) / 2;
+            specialTotal += (pokemon.stats.special_attack + pokemon.stats.special_defense) / 2;
+            
+            hpTotal += pokemon.stats.hp;
+            atkTotal += pokemon.stats.attack;
+            defTotal += pokemon.stats.defense;
+            spAtkTotal += pokemon.stats.special_attack;
+            spDefTotal += pokemon.stats.special_defense;
+            spdTotal += pokemon.stats.speed;
+        });
+        
+        if (count > 0) {
+            const physicalAvg = physicalTotal / count;
+            const specialAvg = specialTotal / count;
+            const total = physicalAvg + specialAvg;
+            
+            const physicalPercent = Math.round((physicalAvg / total) * 100);
+            const specialPercent = 100 - physicalPercent;
+            
+            // Update the progress bar
+            document.getElementById('physical-bar').style.width = `${physicalPercent}%`;
+            document.getElementById('special-bar').style.width = `${specialPercent}%`;
+            
+            // Update text
+            let balanceText;
+            if (Math.abs(physicalPercent - specialPercent) <= 10) {
+                balanceText = 'Well balanced team';
+            } else if (physicalPercent > specialPercent) {
+                balanceText = 'Physically oriented team';
+            } else {
+                balanceText = 'Specially oriented team';
+            }
+            document.getElementById('balance-text').textContent = balanceText;
+            
+            // Update average stats
+            const hpAvg = Math.round(hpTotal / count);
+            const atkAvg = Math.round(atkTotal / count);
+            const defAvg = Math.round(defTotal / count);
+            const spAtkAvg = Math.round(spAtkTotal / count);
+            const spDefAvg = Math.round(spDefTotal / count);
+            const spdAvg = Math.round(spdTotal / count);
+            
+            document.getElementById('avg-stats').innerHTML = `
+                <div class="small">HP: ${hpAvg}</div>
+                <div class="small">Attack: ${atkAvg}</div>
+                <div class="small">Defense: ${defAvg}</div>
+                <div class="small">Sp. Atk: ${spAtkAvg}</div>
+                <div class="small">Sp. Def: ${spDefAvg}</div>
+                <div class="small">Speed: ${spdAvg}</div>
+            `;
+        }
+    }
+    
+    function updateTeamSuggestions() {
+        const suggestionsContainer = document.getElementById('team-suggestions');
+        
+        // If no Pokémon in team, show default message
+        if (currentTeam.every(p => p === null)) {
+            suggestionsContainer.innerHTML = `
+                <p class="text-center text-muted">
+                    Add Pokémon to your team to get suggestions.
+                </p>
+            `;
+            return;
+        }
+        
+        // Find team's weaknesses
+        const weaknesses = calculateDefensiveWeaknesses();
+        
+        // Sort types by weakness count
+        const sortedWeaknesses = Object.entries(weaknesses)
+            .filter(([_, count]) => count > 0)  // Only include types with at least one weakness
+            .sort((a, b) => b[1] - a[1]);  // Sort by count (descending)
+        
+        if (sortedWeaknesses.length === 0) {
+            suggestionsContainer.innerHTML = `
+                <p class="text-center text-success">
+                    Your team has no obvious weaknesses!
+                </p>
+            `;
+            return;
+        }
+        
+        // Get top 3 weaknesses
+        const topWeaknesses = sortedWeaknesses.slice(0, 3);
+        
+        suggestionsContainer.innerHTML = `
+            <p>Consider adding a Pokémon that resists:</p>
+            <ul class="list-group">
+                ${topWeaknesses.map(([type, count]) => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="type-badge type-${type.toLowerCase()}">${type}</span>
+                        <span class="badge bg-danger rounded-pill">${count} weak</span>
+                    </li>
+                `).join('')}
+            </ul>
+        `;
+    }
+    
+    function searchPokemon() {
+        const searchTerm = document.getElementById('pokemon-search').value.trim();
+        if (searchTerm.length < 2) return;
+        
+        fetch(`/api/pokemon?q=${encodeURIComponent(searchTerm)}&limit=10`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('pokemon-search-results');
+                resultsContainer.innerHTML = '';
+                
+                if (data.pokemon && data.pokemon.length > 0) {
+                    data.pokemon.forEach(pokemon => {
+                        const pokemonElement = document.createElement('div');
+                        pokemonElement.className = 'pokemon-search-item';
+                        
+                        const types = pokemon.types.map(type => 
+                            `<span class="type-badge type-${type.toLowerCase()}">${type}</span>`
+                        ).join(' ');
+                        
+                        pokemonElement.innerHTML = `
+                            <img src="${pokemon.image.sprite}" alt="${pokemon.name.english}"
+                                 onerror="this.onerror=null; this.src='/static/images/placeholder.png';">
+                            <div>
+                                <div><strong>${pokemon.name.english}</strong> <span class="text-muted">#${pokemon.id}</span></div>
+                                <div>${types}</div>
+                            </div>
+                        `;
+                        
+                        // Add click event for adding to first empty slot
+                        pokemonElement.addEventListener('click', () => {
+                            // Find first empty slot
+                            const emptySlotIndex = currentTeam.findIndex(p => p === null);
+                            if (emptySlotIndex !== -1) {
+                                selectPokemon(pokemon, emptySlotIndex + 1);
+                            } else {
+                                alert('Your team is full! Remove a Pokémon first.');
+                            }
+                        });
+                        
+                        resultsContainer.appendChild(pokemonElement);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<div class="text-center p-3">No Pokémon found</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error searching for Pokémon:', error);
+                document.getElementById('pokemon-search-results').innerHTML = 
+                    '<div class="text-center p-3 text-danger">Error searching for Pokémon</div>';
+            });
+    }
+    
+    function searchMoves() {
+        const searchTerm = document.getElementById('modal-move-search').value.trim();
+        if (searchTerm.length < 2) return;
+        
+        fetch(`/api/moves?q=${encodeURIComponent(searchTerm)}&limit=10`)
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('modal-move-results');
+                resultsContainer.innerHTML = '';
+                
+                if (data.moves && data.moves.length > 0) {
+                    data.moves.forEach(move => {
+                        const moveElement = document.createElement('div');
+                        moveElement.className = 'move-badge';
+                        moveElement.textContent = move.name.english;
+                        moveElement.dataset.moveSlot = currentMoveSlot;
+                        moveElement.addEventListener('click', () => selectMove(move));
+                        
+                        moveElement.innerHTML = `
+                            <span class="type-badge type-${move.type.toLowerCase()}">${move.type}</span>
+                        `;
+                        
+                        resultsContainer.appendChild(moveElement);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<div class="text-center p-3">No moves found</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error searching for moves:', error);
+                document.getElementById('modal-move-results').innerHTML = 
+                    '<div class="text-center p-3 text-danger">Error searching for moves</div>';
+            });
+    }
+    
+    function selectMove(move) {
+        // Close the modal
+        bootstrap.Modal.getInstance(document.getElementById('moveSelectionModal')).hide();
+        
+        // Update the team slot
+        const teamSlot = document.getElementById(`team-slot-${currentSlot}`);
+        const moveBadges = teamSlot.querySelectorAll('.move-badge');
+        const selectedMoveBadge = moveBadges[currentMoveSlot - 1];
+        
+        // Update move badge
+        selectedMoveBadge.textContent = move.name.english;
+        selectedMoveBadge.className = 'move-badge';
+        
+        // Update team array
+        currentTeam[currentSlot - 1].moves[currentMoveSlot - 1] = move;
+        
+        // Update suggestions
+        updateTeamSuggestions();
+    }
+    
+    function setupMoveBadgeHandlers() {
+        document.addEventListener('click', function(event) {
+            // Check if clicked element is a move badge
+            if (event.target.classList.contains('move-badge')) {
+                event.stopPropagation(); // Prevent slot click event
+                
+                // Get slot and move slot
+                const slotElement = event.target.closest('.team-member');
+                if (!slotElement) return;
+                
+                const slotMatch = slotElement.id.match(/team-slot-(\d+)/);
+                if (!slotMatch) return;
+                
+                currentSlot = parseInt(slotMatch[1]);
+                currentMoveSlot = parseInt(event.target.dataset.moveSlot);
+                currentPokemonId = currentTeam[currentSlot - 1]?.id;
+                
+                if (currentPokemonId) {
+                    openMoveSelection();
+                }
+            }
+        });
+    }
+    
+    function openMoveSelection() {
+        // Update modal title
+        document.getElementById('moveSelectionModalLabel').textContent = 
+            `Select Move for ${currentTeam[currentSlot - 1].name.english} (Slot ${currentMoveSlot})`;
+            
+        // Clear previous search results
+        document.getElementById('modal-move-search').value = '';
+        document.getElementById('modal-move-results').innerHTML = '';
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('moveSelectionModal'));
+        modal.show();
+        
+        // Load available moves for this Pokemon
+        loadPokemonMoves();
+    }
+    
+    function loadPokemonMoves() {
+        const resultsContainer = document.getElementById('modal-move-results');
+        resultsContainer.innerHTML = '<div class="text-center p-3">Loading moves...</div>';
+        
+        fetch(`/api/pokemon/${currentPokemonId}/moves`)
+            .then(response => response.json())
+            .then(data => {
+                resultsContainer.innerHTML = '';
+                
+                if (data.moves && data.moves.length > 0) {
+                    data.moves.forEach(move => {
+                        const moveElement = document.createElement('div');
+                        moveElement.className = 'pokemon-search-item';
+                        moveElement.addEventListener('click', () => selectMove(move));
+                        
+                        moveElement.innerHTML = `
+                            <div>
+                                <div><strong>${move.name.english}</strong></div>
+                                <div>
+                                    <span class="type-badge type-${move.type.toLowerCase()}">${move.type}</span>
+                                    <small class="ms-2">Power: ${move.power || '-'} | Accuracy: ${move.accuracy || '-'}</small>
+                                </div>
+                            </div>
+                        `;
+                        
+                        resultsContainer.appendChild(moveElement);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<div class="text-center p-3">No moves found</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading Pokémon moves:', error);
+                resultsContainer.innerHTML = '<div class="text-center p-3 text-danger">Error loading moves</div>';
+            });
+    }
+</script>
+{% endblock %} 

@@ -1,0 +1,37 @@
+# Core Framework
+flask==2.3.3
+pymongo==4.5.0
+flask-pymongo==2.3.0
+flask-wtf==1.1.1
+Werkzeug==2.3.7
+Jinja2==3.1.2
+itsdangerous==2.1.2
+click==8.1.7
+
+# HTTP Requests & Data Processing
+requests==2.31.0
+pillow==10.0.0
+beautifulsoup4==4.12.2
+
+# Form Handling & Validation
+wtforms==3.0.1
+email-validator==2.0.0
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Caching
+flask-caching==2.1.0
+redis==5.0.0
+
+# Development Tools
+flask-cors==4.0.0
+pytest==7.4.0
+flake8==6.1.0
+
+# Session Management
+flask-session==0.5.0
+
+# API Documentation
+apispec==6.3.0
+marshmallow==3.20.1 

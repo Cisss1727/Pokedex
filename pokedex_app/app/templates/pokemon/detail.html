@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ pokemon.name.english }} (#{{ "%03d"|format(pokemon.id) }}) - PokéApp{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pokemon-detail.css') }}">
+<style>
+    .move-category {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        text-align: center;
+        color: white;
+        font-weight: 500;
+    }
+    
+    .move-category.physical {
+        background-color: #C92112;
+    }
+    
+    .move-category.special {
+        background-color: #4F5870;
+    }
+    
+    .move-category.status {
+        background-color: #8C888C;
+    }
+    
+    .abilities-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .ability-item {
+        border-left: 4px solid #007bff;
+        padding-left: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background-color: rgba(0, 123, 255, 0.05);
+        border-radius: 0 5px 5px 0;
+    }
+    
+    .ability-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .ability-description {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.4;
+    }
+    
+    .hidden-ability-badge {
+        display: inline-block;
+        background-color: #6c757d;
+        color: white;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pokemon-detail-container" id="pokemonContainer">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Pokemon Image and Basic Info -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="pokemon-image-container">
+                        <img id="pokemonImage" src="{{ pokemon.image.hires }}" alt="{{ pokemon.name.english }}" class="img-fluid">
+                        <div class="shiny-toggle" id="shinyToggle" title="Toggle Shiny">
+                            <i class="fas fa-sparkles text-warning"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <div class="pokemon-id" id="pokemonId">#{{ "%03d"|format(pokemon.id) }}</div>
+                        <h1 class="pokemon-name" id="pokemonName">{{ pokemon.name.english }}</h1>
+                        <div class="pokemon-japanese-name">{{ pokemon.name.japanese }}</div>
+                        
+                        <div class="pokemon-types mt-2">
+                            {% for type in pokemon.type %}
+                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mt-3">
+                            <span class="species-label">{{ pokemon.species }}</span>
+                            {% if pokemon.is_legendary %}
+                            <span class="legendary-badge"><i class="fas fa-crown"></i> Legendary</span>
+                            {% endif %}
+                            {% if pokemon.is_mythical %}
+                            <span class="mythical-badge"><i class="fas fa-star"></i> Mythical</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pokemon Profile -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Profile</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="pokemon-profile-list">
+                        <li class="pokemon-profile-item">
+                            <i class="fas fa-weight" id="profileIcon"></i>
+                            <span>Weight</span>
+                            <strong>{{ pokemon.profile.weight }}</strong>
+                        </li>
+                        <li class="pokemon-profile-item">
+                            <i class="fas fa-ruler-vertical"></i>
+                            <span>Height</span>
+                            <strong>{{ pokemon.profile.height }}</strong>
+                        </li>
+                        <li class="pokemon-profile-item">
+                            <i class="fas fa-venus-mars"></i>
+                            <span>Gender Ratio</span>
+                            <div class="gender-ratio">
+                                <div class="male" id="genderMale">♂ {{ pokemon.profile.gender.male }}%</div>
+                                <div class="female" id="genderFemale">♀ {{ pokemon.profile.gender.female }}%</div>
+                            </div>
+                        </li>
+                        <li class="pokemon-profile-item">
+                            <i class="fas fa-egg"></i>
+                            <span>Egg Groups</span>
+                            <strong>{{ pokemon.profile.egg_groups|join(', ') }}</strong>
+                        </li>
+                        <li class="pokemon-profile-item">
+                            <i class="fas fa-globe"></i>
+                            <span>Generation</span>
+                            <strong>Gen {{ pokemon.generation }}</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Evolution Chain -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Evolution Chain</h5>
+                </div>
+                <div class="card-body">
+                    <div class="evolution-chain">
+                        {% if evolution_chain|length > 1 %}
+                            {% for stage in evolution_chain %}
+                                <div class="evolution-stage {% if stage.id == pokemon.id %}current{% endif %}">
+                                    <a href="{{ url_for('pokemon.pokemon_detail', pokedex_id=stage.id) }}" class="evolution-pokemon">
+                                        <img src="{{ stage.image.sprite }}" alt="{{ stage.name }}" class="evolution-image">
+                                        <div class="evolution-info">
+                                            <div class="evolution-name">{{ stage.name }}</div>
+                                            <div class="evolution-id">#{{ "%03d"|format(stage.id) }}</div>
+                                        </div>
+                                    </a>
+                                    {% if not loop.last %}
+                                        <div class="evolution-arrow">
+                                            <i class="fas fa-arrow-down"></i>
+                                            <div class="evolution-method">
+                                                {% if stage.evolution_details %}
+                                                    {{ stage.evolution_details }}
+                                                {% else %}
+                                                    Level {{ stage.evolution_level|default('??') }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-muted">This Pokémon does not evolve.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Stats -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Base Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <div class="stat-label">HP</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar hp-bar" id="hpBar" style="background-color:#FF5959;width:{{ ((pokemon.stats.hp/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.hp }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Attack</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar attack-bar" id="attackBar" style="background-color:#F5AC78;width:{{ ((pokemon.stats.attack/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.attack }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Defense</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar defense-bar" id="defenseBar" style="background-color:#FAE078;width:{{ ((pokemon.stats.defense/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.defense }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Sp. Atk</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar sp-attack-bar" id="spAtkBar" style="background-color:#9DB7F5;width:{{ ((pokemon.stats.special_attack/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.special_attack }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Sp. Def</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar sp-defense-bar" id="spDefBar" style="background-color:#A7DB8D;width:{{ ((pokemon.stats.special_defense/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.special_defense }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Speed</div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar speed-bar" id="speedBar" style="background-color:#FA92B2;width:{{ ((pokemon.stats.speed/180)*100)|round(0,'floor') }}%"></div>
+                            </div>
+                            <div class="stat-value">{{ pokemon.stats.speed }}</div>
+                        </div>
+                        <div class="stat-item total-stats">
+                            <div class="stat-label">Total</div>
+                            <div class="stat-value total-value">{{ pokemon.stats.hp + pokemon.stats.attack + pokemon.stats.defense + pokemon.stats.special_attack + pokemon.stats.special_defense + pokemon.stats.speed }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Type Effectiveness -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Type Effectiveness</h5>
+                </div>
+                <div class="card-body">
+                    {% if type_effectiveness %}
+                        <div class="type-effectiveness">
+                            {% if type_effectiveness.immune %}
+                                <div class="type-section">
+                                    <div class="type-section-title">Immune (0×)</div>
+                                    <div class="type-list">
+                                        {% for type in type_effectiveness.immune %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if type_effectiveness.resistant %}
+                                <div class="type-section">
+                                    <div class="type-section-title">Resistant (0.5×)</div>
+                                    <div class="type-list">
+                                        {% for type in type_effectiveness.resistant %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if type_effectiveness.very_resistant %}
+                                <div class="type-section">
+                                    <div class="type-section-title">Very Resistant (0.25×)</div>
+                                    <div class="type-list">
+                                        {% for type in type_effectiveness.very_resistant %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if type_effectiveness.weak %}
+                                <div class="type-section">
+                                    <div class="type-section-title">Weak (2×)</div>
+                                    <div class="type-list">
+                                        {% for type in type_effectiveness.weak %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if type_effectiveness.very_weak %}
+                                <div class="type-section">
+                                    <div class="type-section-title">Very Weak (4×)</div>
+                                    <div class="type-list">
+                                        {% for type in type_effectiveness.very_weak %}
+                                            <span class="type-badge type-{{ type|lower }}">{{ type }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">Type effectiveness information is not available.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Abilities -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Abilities</h5>
+                </div>
+                <div class="card-body">
+                    <div class="abilities-list">
+                        {% if abilities %}
+                            {% for ability in abilities %}
+                                <div class="ability-item">
+                                    <div class="ability-name">
+                                        {{ ability.name }}
+                                    </div>
+                                    <div class="ability-description">
+                                        {{ ability.description }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-muted">Ability information is not available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Move List Preview -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Moves</h5>
+                </div>
+                <div class="card-body">
+                    {% if moves %}
+                        <div class="moves-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover moves-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Move</th>
+                                            <th>Type</th>
+                                            <th>Category</th>
+                                            <th>Power</th>
+                                            <th>Accuracy</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for move in moves %}
+                                            {% if loop.index <= 5 %}
+                                            <tr>
+                                                <td>{{ move.name }}</td>
+                                                <td>
+                                                    <span class="type-badge type-{{ move.type|lower }}">{{ move.type }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="move-category {{ move.category|lower }}">{{ move.category }}</span>
+                                                </td>
+                                                <td>{{ move.power if move.power else '–' }}</td>
+                                                <td>{{ move.accuracy if move.accuracy else '–' }}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">Move information is not available for this Pokémon.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Apply dynamic styles that use template variables
+        const typeColor = "{{ type_color }}";
+        
+        // Apply background gradient to container
+        const container = document.getElementById('pokemonContainer');
+        container.style.background = `linear-gradient(to bottom, rgba(${typeColor}, 0.3), rgba(${typeColor}, 0.1))`;
+        
+        // Set Pokemon ID and Name color
+        document.getElementById('pokemonId').style.color = `rgba(${typeColor}, 1)`;
+        document.getElementById('pokemonName').style.color = `rgba(${typeColor}, 1)`;
+        
+        // Set profile icon color
+        document.getElementById('profileIcon').style.color = `rgba(${typeColor}, 1)`;
+        document.querySelectorAll('.pokemon-profile-item i').forEach(icon => {
+            icon.style.color = `rgba(${typeColor}, 1)`;
+        });
+        
+        // Set gender width percentages
+        document.getElementById('genderMale').style.width = '{{ pokemon.profile.gender.male }}%';
+        document.getElementById('genderFemale').style.width = '{{ pokemon.profile.gender.female }}%';
+        
+        // Set stat bars
+        const MAX_STAT = 180; // Using a reasonable maximum for better visuals
+        
+        function calculateWidth(value) {
+            let percentage = (value / MAX_STAT) * 100;
+            return Math.min(percentage, 100) + '%';
+        }
+        
+        // Apply widths using data attributes
+        document.querySelectorAll('.stat-bar').forEach(bar => {
+            const statValue = parseInt(bar.getAttribute('data-value')) || 0;
+            bar.style.width = calculateWidth(statValue);
+        });
+    });
+</script>
+{% endblock %} 
